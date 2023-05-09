@@ -6,7 +6,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const filePath = __dirname + "/output.txt";
+const filePath = "output.txt";
 
 rl.question("Enter your text: ", (input) => {
   fs.appendFile(filePath, input + "\n", (err) => {
