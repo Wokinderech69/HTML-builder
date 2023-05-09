@@ -14,9 +14,9 @@ async function printFilesInfo() {
       if (stats.isFile()) {
         const fileSizeInBytes = stats.size;
         const fileSizeInKilobytes = fileSizeInBytes / 1024.0;
-        const fileExtension = path.extname(fileName).replace(".", "");
+        const { name, ext } = path.parse(fileName);
         console.log(
-          `${fileName}-${fileExtension}-${fileSizeInKilobytes.toFixed(3)}kb`
+          `${name}-${ext.replace(".", "")}-${fileSizeInKilobytes.toFixed(3)}kb`
         );
       }
     }
