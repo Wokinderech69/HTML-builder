@@ -46,15 +46,18 @@ const copyDirec = async (source, destination) => {
 
 const replaceTags = async (template, componentsDirec) => {
   const files = await readDirecPromise(componentsDirec);
+  let newTemplate = template;
 
   for (const file of files) {
     const filename = file.name;
-    const filePath = path.join(componentsDirec, filename);
-    const fileData = await readFilePromise(filePath);
-    const regex = new RegExp(`{{${filename.replace(/\./g, "\\.")}}}`, "g");
-    template = template.replace(regex, fileData);
+    const componentName = filename.replace(".html", "");
+    const componentHTML = await readFilePromise(
+      path.join(componentsDirec, filename)
+    );
+    const regex = new RegExp(`{{${componentName}}}`, "g");
+    newTemplate = newTemplate.replace(regex, componentHTML);
   }
-  return template;
+  return newTemplate;
 };
 
 const buildPage = async () => {
