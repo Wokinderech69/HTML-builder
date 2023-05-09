@@ -35,15 +35,7 @@ const copyDirec = async (source, destination) => {
       if (file.isDirectory()) {
         await copyDirec(sourcePath, destinationPath);
       } else {
-        const ext = path.extname(file.name);
-        if (ext === ".html") {
-          const fileData = await readFilePromise(sourcePath);
-          await writeFilePromise(destinationPath, fileData);
-        } else if (ext !== "") {
-          console.error(`Error: unsupported file type ${ext} in ${sourcePath}`);
-        } else {
-          await fsPromises.copyFile(sourcePath, destinationPath);
-        }
+        await fsPromises.copyFile(sourcePath, destinationPath);
       }
     }
   } catch (err) {
