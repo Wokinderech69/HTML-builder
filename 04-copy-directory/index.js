@@ -10,9 +10,22 @@ async function copyDirectory() {
   } catch (error) {
     await fsPromises.mkdir(targetDirectoryPath);
   }
-  const files = await fsPromises.readdir(sourceDirectoryPath);
 
-  for (const file of files) {
+  const targetFiles = await fsPromises.readdir(targetDirectoryPath);
+
+  for (const targetFile of targetFiles) {
+    const targetFilePath = path.join(targetDirectoryPath, targetFile);
+    const sourceFilePath = path.join(sourceDirectoryPath, targetFile);
+    try {
+      await fsPromises.access(sourceFilePath);
+    } catch (error) {
+      await fsPromises.unlink(targetFilePath);
+    }
+  }
+
+  const sourceFiles = await fsPromises.readdir(sourceDirectoryPath);
+
+  for (const file of sourceFiles) {
     const sourcePath = path.join(sourceDirectoryPath, file);
     const targetPath = path.join(targetDirectoryPath, file);
 
