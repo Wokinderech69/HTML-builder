@@ -10,15 +10,36 @@ fs.readdir(sourceDirPath, (error, files) => {
   if (error) throw error;
   const cssFiles = files.filter((file) => pathModule.extname(file) === ".css");
 
-  const cssContent = cssFiles
-    .map((file) => {
+  Promise.all(
+    cssFiles.map((file) => {
       const filePath = pathModule.join(sourceDirPath, file);
-      return fs.readFileSync(filePath, "utf-8");
+      return new Promise((resolve, reject) => {
+        fs.readFile(filePath, "utf-8", (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        });
+      });
     })
-    .join("\n");
-
-  fs.writeFile(outputFilePath, cssContent, (error) => {
-    if (error) throw error;
-    console.log("Styles successfully bundled!");
-  });
+  )
+    .then((data) => {
+      const cssContent = data.join("\n");
+      return new Promise((resolve, reject) => {
+        fs.writeFile(outputFilePath, cssContent, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      });
+    })
+    .then(() => {
+      console.log("Styles successfully bundled!");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
